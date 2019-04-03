@@ -1,12 +1,14 @@
-# Reflector.cs Usage
+# Usage
 
-```
+``` csharp
 var client = Reflector.Create<Client>()
     .Set("Id", "a65s4d6a5s")
     .Set("Domain", "www.some-client.com")
     .Set("RegisteredAt", DateTime.UtcNow)
-    .Set("Platforms", new[] { 1, 2, 3 }, isField: true)
+    .Set("platforms", new[] { 1, 2, 3 }, isField: true)
     .GetInstance();
 ```
 
-Reflector can deal with `private set` properties and `private` fields as well (just remember to indicate that with the `isField: true` parameter when calling the `Set(...)` method.
+- Property/field names are case-insensitive;
+- Property/fields can be private;
+- `Set(name, value)` will look for a property, while `Set(name, value, isField: true)` will look for a field.
