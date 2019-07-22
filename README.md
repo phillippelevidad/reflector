@@ -1,7 +1,5 @@
 # Usage
 
-Copy and paste the [Reflector](https://github.com/phillippelevidad/reflector/src/Reflector.cs) class directly to your project.
-
 ``` csharp
 var client = Reflector.Create<Client>()
     .Set("Id", "a65s4d6a5s")
@@ -17,7 +15,12 @@ Key points:
 - Property/fields can be private;
 - `Set(name, value)` will look for a property, while `Set(name, value, isField: true)` will look for a field.
 
----
+### Installation
+
+1. Copy and paste the [Reflector](https://github.com/phillippelevidad/reflector/blob/master/src/Reflector.cs) class directly to your project;
+2. Install NuGet package [System.Reflection.Emit.Lightweight](https://www.nuget.org/packages/System.Reflection.Emit.Lightweight).
+
+### Performance notes
 
 The implementation has been optimized with caching. 
 
