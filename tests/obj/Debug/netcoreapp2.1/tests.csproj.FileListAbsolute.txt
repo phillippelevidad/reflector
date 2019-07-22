@@ -1,0 +1,17 @@
+C:\Users\Phillippe Santana\source\repos\reflector\tests\bin\Debug\netcoreapp2.1\xunit.runner.visualstudio.dotnetcore.testadapter.dll
+C:\Users\Phillippe Santana\source\repos\reflector\tests\bin\Debug\netcoreapp2.1\xunit.runner.reporters.netcoreapp10.dll
+C:\Users\Phillippe Santana\source\repos\reflector\tests\bin\Debug\netcoreapp2.1\xunit.runner.utility.netcoreapp10.dll
+C:\Users\Phillippe Santana\source\repos\reflector\tests\bin\Debug\netcoreapp2.1\tests.deps.json
+C:\Users\Phillippe Santana\source\repos\reflector\tests\bin\Debug\netcoreapp2.1\tests.runtimeconfig.json
+C:\Users\Phillippe Santana\source\repos\reflector\tests\bin\Debug\netcoreapp2.1\tests.runtimeconfig.dev.json
+C:\Users\Phillippe Santana\source\repos\reflector\tests\bin\Debug\netcoreapp2.1\tests.dll
+C:\Users\Phillippe Santana\source\repos\reflector\tests\obj\Debug\netcoreapp2.1\tests.csprojAssemblyReference.cache
+C:\Users\Phillippe Santana\source\repos\reflector\tests\obj\Debug\netcoreapp2.1\tests.csproj.CoreCompileInputs.cache
+C:\Users\Phillippe Santana\source\repos\reflector\tests\obj\Debug\netcoreapp2.1\tests.AssemblyInfoInputs.cache
+C:\Users\Phillippe Santana\source\repos\reflector\tests\obj\Debug\netcoreapp2.1\tests.AssemblyInfo.cs
+C:\Users\Phillippe Santana\source\repos\reflector\tests\bin\Debug\netcoreapp2.1\tests.pdb
+C:\Users\Phillippe Santana\source\repos\reflector\tests\bin\Debug\netcoreapp2.1\src.dll
+C:\Users\Phillippe Santana\source\repos\reflector\tests\bin\Debug\netcoreapp2.1\src.pdb
+C:\Users\Phillippe Santana\source\repos\reflector\tests\obj\Debug\netcoreapp2.1\tests.csproj.CopyComplete
+C:\Users\Phillippe Santana\source\repos\reflector\tests\obj\Debug\netcoreapp2.1\tests.dll
+C:\Users\Phillippe Santana\source\repos\reflector\tests\obj\Debug\netcoreapp2.1\tests.pdb

@@ -1,0 +1,9 @@
+C:\Users\Phillippe Santana\source\repos\reflector\src\bin\Debug\netstandard2.0\src.deps.json
+C:\Users\Phillippe Santana\source\repos\reflector\src\bin\Debug\netstandard2.0\src.dll
+C:\Users\Phillippe Santana\source\repos\reflector\src\obj\Debug\netstandard2.0\src.csprojAssemblyReference.cache
+C:\Users\Phillippe Santana\source\repos\reflector\src\obj\Debug\netstandard2.0\src.csproj.CoreCompileInputs.cache
+C:\Users\Phillippe Santana\source\repos\reflector\src\obj\Debug\netstandard2.0\src.AssemblyInfoInputs.cache
+C:\Users\Phillippe Santana\source\repos\reflector\src\obj\Debug\netstandard2.0\src.AssemblyInfo.cs
+C:\Users\Phillippe Santana\source\repos\reflector\src\bin\Debug\netstandard2.0\src.pdb
+C:\Users\Phillippe Santana\source\repos\reflector\src\obj\Debug\netstandard2.0\src.dll
+C:\Users\Phillippe Santana\source\repos\reflector\src\obj\Debug\netstandard2.0\src.pdb
