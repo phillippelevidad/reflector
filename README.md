@@ -5,7 +5,7 @@ var client = Reflector.Create<Client>()
     .Set("Id", "a65s4d6a5s")
     .Set("Domain", "www.some-client.com")
     .Set("RegisteredAt", DateTime.UtcNow)
-    .SetField("platforms", new[] { 1, 2, 3 })
+    .Set("platforms", new[] { 1, 2, 3 }) // field
     .GetInstance();
 ```
 
