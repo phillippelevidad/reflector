@@ -4,7 +4,7 @@ namespace System.Reflection
     {
         public static Reflector<T> Create<T>() where T : class
         {
-            return Reflector<T>.Create<T>();
+            return Reflector<T>.Create();
         }
     }
 
@@ -30,9 +30,9 @@ namespace System.Reflection
             return this;
         }
 
-        public static Reflector<TModel> Create<TModel>() where TModel : class
+        public static Reflector<T> Create()
         {
-            return new Reflector<TModel>();
+            return new Reflector<T>();
         }
     }
 }
