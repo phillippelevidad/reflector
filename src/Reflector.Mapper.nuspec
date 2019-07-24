@@ -2,14 +2,14 @@
 <package>
   <metadata>
     <id>Reflector.Mapper</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <title>Reflector</title>
     <authors>Phillippe Santana</authors>
     <owners>Phillippe Santana</owners>
     <projectUrl>https://github.com/phillippelevidad/reflector</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A simpler and faster way to use Reflection for instantiating classes and setting fields/properties in mapping operations.</description>
-    <releaseNotes>Initial 1.0.0 release</releaseNotes>
+    <releaseNotes>Added support for working with supplied instances.</releaseNotes>
     <tags>reflection mapping mapper performance optimized fast</tags>
     <dependencies>
       <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
