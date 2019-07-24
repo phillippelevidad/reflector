@@ -69,10 +69,10 @@ namespace tests
         public void CanSetField()
         {
             var instance = Reflector.Create<ClassWithPublicEmptyConstructor>()
-                .SetField("someField", true)
+                .Set("someField", true)
                 .GetInstance();
 
-            var field = typeof(ClassWithPublicEmptyConstructor).GetField("someField", BindingFlags.Instance | BindingFlags.NonPublic);
+            var field = typeof(ClassWithPublicEmptyConstructor).GetField("_someField", BindingFlags.Instance | BindingFlags.NonPublic);
             var value = field.GetValue(instance);
 
             value.Should().Be(true);
@@ -86,13 +86,13 @@ namespace tests
                 .Set("PublicProperty", 10)
                 .Set("PrivateProperty", "some value")
                 .Set("NullableProperty", now)
-                .SetField("someField", true)
+                .Set("someField", true)
                 .GetInstance();
 
             var prop = typeof(ClassWithPublicEmptyConstructor).GetProperty("PrivateProperty", BindingFlags.Instance | BindingFlags.NonPublic);
             var propValue = prop.GetValue(instance, null);
 
-            var field = typeof(ClassWithPublicEmptyConstructor).GetField("someField", BindingFlags.Instance | BindingFlags.NonPublic);
+            var field = typeof(ClassWithPublicEmptyConstructor).GetField("_someField", BindingFlags.Instance | BindingFlags.NonPublic);
             var fieldValue = field.GetValue(instance);
 
             propValue.Should().Be("some value");
@@ -112,18 +112,49 @@ namespace tests
         }
 
         [Fact]
-        public void CanDiffPropertyAndFieldWithSameNames()
+        public void PropertyIsPreferredWhenNameCollidesWithField()
         {
             var instance = Reflector.Create<ClassWithPrivateEmptyConstructor>()
-                .Set("FieldAndPropertyWithSameName", "property value")
-                .SetField("fieldAndPropertyWithSameName", "field value")
+                .Set("FieldAndPropertyWithSameName", "value")
                 .GetInstance();
 
             var field = typeof(ClassWithPrivateEmptyConstructor).GetField("fieldAndPropertyWithSameName", BindingFlags.Instance | BindingFlags.NonPublic);
             var fieldValue = field.GetValue(instance);
 
-            instance.FieldAndPropertyWithSameName.Should().Be("property value");
-            fieldValue.Should().Be("field value");
+            instance.FieldAndPropertyWithSameName.Should().Be("value");
+            fieldValue.Should().BeNull();
+        }
+
+        [Fact]
+        public void NonExistingPropertyOrFieldThrowsInvalidOperationException()
+        {
+            var reflector = Reflector.Create<ClassWithPublicEmptyConstructor>();
+            Action invalidAction = () => reflector.Set("NonExistingPropertyOrField", "value");
+            invalidAction.Should().Throw<InvalidOperationException>();
+        }
+
+        [Fact]
+        public void StaticPropertyOrFieldThrowsInvalidOperationException()
+        {
+            var reflector = Reflector.Create<ClassWithPublicEmptyConstructor>();
+
+            Action invalidProperty = () => reflector.Set("StaticProperty", "value");
+            Action invalidField = () => reflector.Set("staticField", "value");
+
+            invalidProperty.Should().Throw<InvalidOperationException>();
+            invalidField.Should().Throw<InvalidOperationException>();
+        }
+
+        [Fact]
+        public void ReadOnlyPropertyOrFieldThrowsInvalidOperationException()
+        {
+            var reflector = Reflector.Create<ClassWithPublicEmptyConstructor>();
+
+            Action invalidProperty = () => reflector.Set("ReadOnlyProperty", "value");
+            Action invalidField = () => reflector.Set("readOnlyField", "value");
+
+            invalidProperty.Should().Throw<InvalidOperationException>();
+            invalidField.Should().Throw<InvalidOperationException>();
         }
     }
 }

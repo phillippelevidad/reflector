@@ -1,7 +1,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection.Emit;
+using System.Text;
 
 namespace System.Reflection
 {
@@ -12,7 +14,7 @@ namespace System.Reflection
     {
         public static Reflector<T> Create<T>() where T : class
         {
-            return Reflector<T>.CreateInstance<T>();
+            return Reflector<T>.Create<T>();
         }
     }
 
@@ -32,24 +34,13 @@ namespace System.Reflection
             return instance;
         }
 
-        public Reflector<T> Set(string name, object value, bool isField = false)
+        public Reflector<T> Set(string name, object value)
         {
-            return isField ? SetField(name, value) : SetProperty(name, value);
-        }
-
-        public Reflector<T> SetField(string name, object value)
-        {
-            CachedSetter.Field<T>(type, name).Invoke(instance, value);
+            CachedSetter.PropertyOrField<T>(type, name).Invoke(instance, value);
             return this;
         }
 
-        public Reflector<T> SetProperty(string name, object value)
-        {
-            CachedSetter.Property<T>(type, name).Invoke(instance, value);
-            return this;
-        }
-
-        public static Reflector<TModel> CreateInstance<TModel>() where TModel : class
+        public static Reflector<TModel> Create<TModel>() where TModel : class
         {
             return new Reflector<TModel>();
         }
@@ -99,9 +90,9 @@ namespace System.Reflection
             private static readonly BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase;
             private static readonly ConcurrentDictionary<string, Delegate> expressionCache = new ConcurrentDictionary<string, Delegate>();
 
-            internal static Action<TInstance, object> Property<TInstance>(Type type, string propertyName)
+            internal static Action<TInstance, object> PropertyOrField<TInstance>(Type type, string name)
             {
-                var key = GetKey(type, propertyName);
+                var key = GetKey(type, name);
 
                 if (!expressionCache.TryGetValue(key, out Delegate expression))
                 {
@@ -109,15 +100,7 @@ namespace System.Reflection
                     {
                         if (!expressionCache.TryGetValue(key, out expression))
                         {
-                            var property = type.GetProperty(propertyName, flags);
-
-                            var target = Expression.Parameter(type, "target");
-                            var withValue = Expression.Parameter(typeof(object), "value");
-
-                            var accessProperty = Expression.Property(target, property);
-                            var assign = Expression.Assign(accessProperty, Expression.Convert(withValue, property.PropertyType));
-
-                            expression = Expression.Lambda<Action<TInstance, object>>(assign, target, withValue).Compile();
+                            expression = PropertyOrFieldInternal<T>(type, name);
                             expressionCache[key] = expression;
                         }
                     }
@@ -126,37 +109,51 @@ namespace System.Reflection
                 return (Action<TInstance, object>)expression;
             }
 
-            internal static Action<TInstance, object> Field<TInstance>(Type type, string fieldName)
+            private static Action<TInstance, object> PropertyOrFieldInternal<TInstance>(Type type, string name)
             {
-                var key = GetKey(type, fieldName, isField: true);
+                var property = type.GetProperty(name, flags);
+                if (property != null && property.CanWrite) return GenerateSetter<TInstance>(type, property, property.PropertyType);
 
-                if (!expressionCache.TryGetValue(key, out Delegate expression))
+                foreach (var variation in GetFieldNameVariations(name))
                 {
-                    lock (type)
-                    {
-                        if (!expressionCache.TryGetValue(key, out expression))
-                        {
-                            var field = type.GetField(fieldName, flags);
-
-                            var target = Expression.Parameter(type, "target");
-                            var withValue = Expression.Parameter(typeof(object), "value");
-
-                            var accessField = Expression.Field(target, field);
-                            var assign = Expression.Assign(accessField, Expression.Convert(withValue, field.FieldType));
-
-                            expression = Expression.Lambda<Action<TInstance, object>>(assign, target, withValue).Compile();
-                            expressionCache[key] = expression;
-                        }
-                    }
+                    var field = type.GetField(variation, flags);
+                    if (field != null && !field.IsInitOnly) return GenerateSetter<TInstance>(type, field, field.FieldType);
                 }
 
-                return (Action<TInstance, object>)expression;
+                throw GenerateNotFoundException(type, name);
             }
 
-            private static string GetKey(Type type, string propertyOrField, bool isField = false)
+            private static Exception GenerateNotFoundException(Type type, string name)
             {
-                var identifier = isField ? "f" : "p";
-                return $"{type.FullName}_{identifier}_{propertyOrField}";
+                var message = new StringBuilder($"Property or field '{name}' was not found in type '{type.FullName}'.")
+                    .AppendLine("The following patterns have been searched (search is not case sensitive and looks for writable instance members, whether public or not):")
+                    .AppendLine($"Property named '{name}'");
+
+                foreach (var variation in GetFieldNameVariations(name))
+                    message.AppendLine($"Field named '{variation}'");
+
+                return new InvalidOperationException(message.ToString());
+            }
+
+            private static Action<TInstance, object> GenerateSetter<TInstance>(Type type, MemberInfo member, Type memberType)
+            {
+                var target = Expression.Parameter(type, "target");
+                var withValue = Expression.Parameter(typeof(object), "value");
+
+                var accessMember = Expression.PropertyOrField(target, member.Name);
+                var assign = Expression.Assign(accessMember, Expression.Convert(withValue, memberType));
+
+                return Expression.Lambda<Action<TInstance, object>>(assign, target, withValue).Compile();
+            }
+
+            private static string[] GetFieldNameVariations(string name)
+            {
+                return new string[] { name, $"_{name}", $"m{name}", $"m_{name}" };
+            }
+
+            private static string GetKey(Type type, string propertyOrField)
+            {
+                return $"{type.FullName}_{propertyOrField}";
             }
         }
 
