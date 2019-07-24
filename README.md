@@ -17,8 +17,8 @@ Key points:
 
 ### Installation
 
-1. Copy and paste the [Reflector](https://github.com/phillippelevidad/reflector/blob/master/src/Reflector.cs) class directly to your project;
-2. Install NuGet package [System.Reflection.Emit.Lightweight](https://www.nuget.org/packages/System.Reflection.Emit.Lightweight).
+Install from NuGet at
+https://www.nuget.org/packages/Reflector.Mapper
 
 ### Performance notes
 
