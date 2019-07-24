@@ -19,7 +19,8 @@ Key points:
 - The class must provide a parameterless constructor (it may be private);
 - Property/field names are case-insensitive;
 - Property/fields can be private;
-- Fields are searched with the following patterns: `field`, `_field`, `mField`, `m_field`
+- Fields are searched with the following patterns: `field`, `_field`, `mField`, `m_field`;
+- Does **not** work with `const` and `readonly` fields, nor properties without `set`.
 
 ### Installation
 
@@ -43,6 +44,7 @@ The first time a constructor, property setter or field setter are used, Reflecto
 - Can set nullable property
 - Can set field
 - Can set property regardless of case
+- Can work with supplied instance
 - Property is preferred over field when names collide
 - Non-existent property or field returns InvalidOperationException
 - Static property or field returns InvalidOperationException
