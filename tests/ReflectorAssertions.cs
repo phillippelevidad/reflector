@@ -156,5 +156,29 @@ namespace tests
             invalidProperty.Should().Throw<InvalidOperationException>();
             invalidField.Should().Throw<InvalidOperationException>();
         }
+
+        [Fact]
+        public void CanSetAllFieldsAndPropertiesUsingSuppliedInstance()
+        {
+            var now = DateTime.Now;
+            var instance = new ClassWithPublicEmptyConstructor();
+
+            Reflector.Using(instance)
+                .Set("PublicProperty", 10)
+                .Set("PrivateProperty", "some value")
+                .Set("NullableProperty", now)
+                .Set("someField", true);
+
+            var prop = typeof(ClassWithPublicEmptyConstructor).GetProperty("PrivateProperty", BindingFlags.Instance | BindingFlags.NonPublic);
+            var propValue = prop.GetValue(instance, null);
+
+            var field = typeof(ClassWithPublicEmptyConstructor).GetField("_someField", BindingFlags.Instance | BindingFlags.NonPublic);
+            var fieldValue = field.GetValue(instance);
+
+            propValue.Should().Be("some value");
+            fieldValue.Should().Be(true);
+            instance.PublicProperty.Should().Be(10);
+            instance.NullableProperty.Should().Be(now);
+        }
     }
 }

@@ -7,6 +7,12 @@ var client = Reflector.Create<Client>()
     .Set("RegisteredAt", DateTime.UtcNow)
     .Set("platforms", new[] { 1, 2, 3 }) // field
     .GetInstance();
+
+// Or supply your own instance
+var another = Reflector.Using(new Client())
+    .Set("Id", "a65s4d6a5s")
+    .Set("Domain", "www.some-client.com")
+    .GetInstance();
 ```
 
 Key points:

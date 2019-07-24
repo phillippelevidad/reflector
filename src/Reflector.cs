@@ -6,6 +6,11 @@ namespace System.Reflection
         {
             return Reflector<T>.Create();
         }
+
+        public static Reflector<T> Using<T>(T instance) where T : class
+        {
+            return Reflector<T>.Using(instance);
+        }
     }
 
     public class Reflector<T> where T : class
@@ -17,6 +22,12 @@ namespace System.Reflection
         {
             type = typeof(T);
             instance = CachedActivator.CreateInstance<T>();
+        }
+
+        private Reflector(T instance)
+        {
+            type = typeof(T);
+            this.instance = instance;
         }
 
         public T GetInstance()
@@ -33,6 +44,11 @@ namespace System.Reflection
         public static Reflector<T> Create()
         {
             return new Reflector<T>();
+        }
+
+        public static Reflector<T> Using(T instance)
+        {
+            return new Reflector<T>(instance);
         }
     }
 }
