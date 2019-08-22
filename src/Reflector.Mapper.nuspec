@@ -1,19 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <package>
-  <metadata>
-    <id>Reflector.Mapper</id>
-    <version>1.0.1</version>
-    <title>Reflector</title>
-    <authors>Phillippe Santana</authors>
-    <owners>Phillippe Santana</owners>
-    <projectUrl>https://github.com/phillippelevidad/reflector</projectUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A simpler and faster way to use Reflection for instantiating classes and setting fields/properties in mapping operations.</description>
-    <releaseNotes>Added support for working with supplied instances.</releaseNotes>
-    <tags>reflection mapping mapper performance optimized fast</tags>
-    <dependencies>
-      <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
-    </dependencies>
-    <summary>Fast Reflection wrapper for mapping operations</summary>
-  </metadata>
+    <metadata>
+        <id>Reflector.Mapper</id>
+        <version>1.0.2</version>
+        <title>Reflector</title>
+        <authors>Phillippe Santana</authors>
+        <owners>Phillippe Santana</owners>
+        <projectUrl>https://github.com/phillippelevidad/reflector</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>A simpler and faster way to use Reflection for instantiating classes and setting fields/properties in mapping operations.</description>
+        <releaseNotes>Added support for working with supplied instances.</releaseNotes>
+        <tags>reflection mapping mapper performance optimized fast</tags>
+        <repository type="git" url="https://github.com/phillippelevidad/reflector" />
+        <dependencies>
+            <group targetFramework=".NETFramework4.5.1" />
+            <group targetFramework=".NETStandard1.3">
+                <dependency id="System.Reflection.Emit" version="4.3.0" exclude="Build,Analyzers" />
+                <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" exclude="Build,Analyzers" />
+            </group>
+            <group targetFramework=".NETStandard2.0">
+                <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" exclude="Build,Analyzers" />
+            </group>
+        </dependencies>
+        <summary>Fast Reflection wrapper for mapping operations</summary>
+    </metadata>
 </package>
