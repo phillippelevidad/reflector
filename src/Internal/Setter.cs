@@ -36,10 +36,10 @@ namespace Internal
 
         private static Action<object, object> BuildForInternal(Type type, MemberInfo member, Type memberType)
         {
-            var target = Expression.Parameter(type, "target");
+            var target = Expression.Parameter(typeof(object), "target");
             var withValue = Expression.Parameter(typeof(object), "value");
 
-            var accessMember = Expression.PropertyOrField(target, member.Name);
+            var accessMember = Expression.PropertyOrField(Expression.Convert(target, type), member.Name);
             var assign = Expression.Assign(accessMember, Expression.Convert(withValue, memberType));
 
             return Expression.Lambda<Action<object, object>>(assign, target, withValue).Compile();
