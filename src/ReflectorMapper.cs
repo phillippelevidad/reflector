@@ -4,20 +4,22 @@ namespace System.Reflection
 {
     public static class ReflectorMapper
     {
-        public static TTarget Map<TSource, TTarget>(TSource source)
-            where TSource : class
-            where TTarget : class
+        public static TTarget Map<TTarget>(object source) where TTarget : class
         {
-            var target = Reflector.Create<TSource>().GetInstance();
+            var target = Reflector.Create<TTarget>().GetInstance();
             Map(source, target);
             return target as TTarget;
         }
 
-        public static void Map<TSource, TTarget>(TSource source, TTarget target)
-            where TSource : class
-            where TTarget : class
+        public static void Map(object source, object target)
         {
-            var mapping = ExpressionCache.GetMapping<TSource, TTarget>();
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+
+            var mapping = ExpressionCache.GetMapping(source.GetType(), target.GetType());
             mapping.Map(source, target);
         }
     }

@@ -26,10 +26,8 @@ namespace Internal
             }
         }
 
-        internal static Mapping BuildFor<TSource, TTarget>()
+        internal static Mapping BuildFor(Type sourceType, Type targetType)
         {
-            var sourceType = typeof(TSource);
-            var targetType = typeof(TTarget);
             var memberMappings = new List<MemberMapping>();
 
             foreach (var sourceProperty in sourceType.GetProperties())
