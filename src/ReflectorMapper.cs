@@ -1,50 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Internal;
 
-namespace src
+namespace System.Reflection
 {
-    public class ReflectorMapper
+    public static class ReflectorMapper
     {
         public static TTarget Map<TSource, TTarget>(TSource source)
+            where TSource : class
+            where TTarget : class
         {
-            throw new NotImplementedException();
+            var target = Reflector.Create<TSource>().GetInstance();
+            Map(source, target);
+            return target as TTarget;
         }
 
         public static void Map<TSource, TTarget>(TSource source, TTarget target)
+            where TSource : class
+            where TTarget : class
         {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class ReflectorMapper<TSource, TTarget>
-        where TSource : class
-        where TTarget : class
-    {
-        private readonly Type sourceType;
-        private readonly Type targetType;
-
-        private ReflectorMapper()
-        {
-            sourceType = typeof(TSource);
-            targetType = typeof(TTarget);
-            Key = $"{sourceType.AssemblyQualifiedName}_{targetType.AssemblyQualifiedName}";
-        }
-
-        public static ReflectorMapper<TSource, TTarget> Create()
-        {
-            return new ReflectorMapper<TSource, TTarget>();
-        }
-
-        public string Key { get; }
-
-        private static Dictionary<object, object> BuildMapping()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override string ToString()
-        {
-            return $"{sourceType.FullName}_{targetType.FullName}";
+            var mapping = ExpressionCache.GetMapping<TSource, TTarget>();
+            mapping.Map(source, target);
         }
     }
 }

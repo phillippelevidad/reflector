@@ -1,3 +1,5 @@
+using Internal;
+
 namespace System.Reflection
 {
     public class Reflector
@@ -15,18 +17,15 @@ namespace System.Reflection
 
     public class Reflector<T> where T : class
     {
-        private readonly Type type;
         private readonly T instance;
 
         private Reflector()
         {
-            type = typeof(T);
-            instance = CachedActivator.CreateInstance<T>();
+            instance = ExpressionCache.GetConstructor<T>().Construct<T>();
         }
 
         private Reflector(T instance)
         {
-            type = typeof(T);
             this.instance = instance;
         }
 
@@ -35,9 +34,9 @@ namespace System.Reflection
             return instance;
         }
 
-        public Reflector<T> Set(string name, object value)
+        public Reflector<T> Set(string memberName, object value)
         {
-            CachedSetter.PropertyOrField<T>(type, name).Invoke(instance, value);
+            ExpressionCache.GetSetter<T>(memberName).Set(instance, value);
             return this;
         }
 
