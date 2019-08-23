@@ -5,6 +5,10 @@ namespace Internal
 {
     internal static class ExpressionCache
     {
+        private static readonly object constructorLock = new object();
+        private static readonly object setterLock = new object();
+        private static readonly object mappingLock = new object();
+
         private static readonly ConcurrentDictionary<string, Constructor> constructorCache = new ConcurrentDictionary<string, Constructor>();
         private static readonly ConcurrentDictionary<string, Setter> setterCache = new ConcurrentDictionary<string, Setter>();
         private static readonly ConcurrentDictionary<string, Mapping> mappingCache = new ConcurrentDictionary<string, Mapping>();
@@ -15,11 +19,14 @@ namespace Internal
 
             if (!constructorCache.TryGetValue(key, out Constructor constructor))
             {
-                lock (key)
+                lock (constructorLock)
                 {
                     if (!constructorCache.TryGetValue(key, out constructor))
                     {
-                        constructor = Constructor.BuildFor(type);
+                        var result = Constructor.BuildFor(type)
+                            .OnFailure(error => throw new InvalidOperationException(error));
+
+                        constructor = result.Value;
                         constructorCache[key] = constructor;
                     }
                 }
@@ -34,11 +41,14 @@ namespace Internal
 
             if (!setterCache.TryGetValue(key, out Setter setter))
             {
-                lock (type)
+                lock (setterLock)
                 {
                     if (!setterCache.TryGetValue(key, out setter))
                     {
-                        setter = Setter.BuildFor(type, memberName);
+                        var result = Setter.BuildFor(type, memberName)
+                            .OnFailure(error => throw new InvalidOperationException(error));
+
+                        setter = result.Value;
                         setterCache[key] = setter;
                     }
                 }
@@ -53,8 +63,6 @@ namespace Internal
 
             if (!mappingCache.TryGetValue(key, out Mapping mapping))
             {
-                var mappingLock = new object();
-
                 lock (mappingLock)
                 {
                     if (!mappingCache.TryGetValue(key, out mapping))

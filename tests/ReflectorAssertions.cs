@@ -126,7 +126,7 @@ namespace tests
         }
 
         [Fact]
-        public void NonExistingPropertyOrFieldThrowsInvalidOperationException()
+        public void NonExistingPropertyOrFieldThrowsPropertyOrFieldNotFoundExceptionException()
         {
             var reflector = Reflector.Create<ClassWithPublicEmptyConstructor>();
             Action invalidAction = () => reflector.Set("NonExistingPropertyOrField", "value");

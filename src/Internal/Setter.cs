@@ -17,21 +17,21 @@ namespace Internal
 
         internal void Set(object instance, object value) => setter.Invoke(instance, value);
 
-        internal static Setter BuildFor(Type type, string memberName)
+        internal static Result<Setter> BuildFor(Type type, string memberName)
         {
-            var member = MemberAccessor.GetMemberForWritingOrNull(type, memberName);
+            var memberResult = MemberAccessor.GetMemberForWritingOrNull(type, memberName);
+            if (memberResult.IsFailure)
+                return Result.Fail<Setter>(memberResult.Error);
 
-            if (member == null)
-                throw PropertyOrFieldNotFoundException.For(type, memberName);
-
+            var member = memberResult.Value;
             var memberType = member.MemberType == MemberTypes.Property
                 ? (member as PropertyInfo).PropertyType
                 : (member as FieldInfo).FieldType;
 
-            var setter = BuildForInternal(type, member, memberType);
+            var action = BuildForInternal(type, member, memberType);
             var key = $"Set_{type.AssemblyQualifiedName}_{member.Name}";
 
-            return new Setter(key, setter);
+            return new Setter(key, action);
         }
 
         private static Action<object, object> BuildForInternal(Type type, MemberInfo member, Type memberType)

@@ -18,10 +18,13 @@ namespace Internal
         internal object Construct() => createInstanceDelegate.Invoke();
         internal T Construct<T>() => (T)Construct();
 
-        internal static Constructor BuildFor(Type type)
+        internal static Result<Constructor> BuildFor(Type type)
         {
             var createMethod = new DynamicMethod($"Create_{type.Name}", type, Type.EmptyTypes);
             var defaultConstructor = type.GetConstructor(constructorFlags, null, Type.EmptyTypes, null);
+
+            if (defaultConstructor == null)
+                return Result.Fail<Constructor>(BuildErrorMessage(type));
 
             var ilGenerator = createMethod.GetILGenerator();
             ilGenerator.Emit(OpCodes.Newobj, defaultConstructor);
@@ -31,6 +34,12 @@ namespace Internal
                 as CreateInstanceDelegate;
 
             return new Constructor(@delegate);
+        }
+
+        private static string BuildErrorMessage(Type type)
+        {
+            return $"A default (parameterless) constructor was not found in type '{type.FullName}'. " +
+                "Please provide a default constructor, public or not.";
         }
 
         private delegate object CreateInstanceDelegate();

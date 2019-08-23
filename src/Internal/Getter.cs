@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Internal
 {
@@ -17,13 +16,13 @@ namespace Internal
 
         internal object Get(object fromInstance) => getter.Invoke(fromInstance);
 
-        internal static Getter BuildFor(Type type, string memberName)
+        internal static Result<Getter> BuildFor(Type type, string memberName)
         {
-            var member = MemberAccessor.GetMemberForReadingOrNull(type, memberName);
+            var memberResult = MemberAccessor.GetMemberForWritingOrNull(type, memberName);
+            if (memberResult.IsFailure)
+                return Result.Fail<Getter>(memberResult.Error);
 
-            if (member == null)
-                throw PropertyOrFieldNotFoundException.For(type, memberName);
-
+            var member = memberResult.Value;
             var fromSource = Expression.Parameter(type, "source");
             var accessMember = Expression.PropertyOrField(fromSource, member.Name);
 

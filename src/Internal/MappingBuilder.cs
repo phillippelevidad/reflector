@@ -33,22 +33,22 @@ namespace Internal
             foreach (var sourceProperty in sourceType.GetProperties())
             {
                 var sourceMember = MemberAccessor.GetMemberForReadingOrNull(sourceType, sourceProperty.Name);
-                if (sourceMember == null)
+                if (sourceMember.IsFailure)
                     continue;
 
                 var targetMember = MemberAccessor.GetMemberForWritingOrNull(targetType, sourceProperty.Name);
-                if (targetMember == null)
+                if (targetMember.IsFailure)
                     continue;
 
-                var sourceMemberType = GetPropertyOrFieldType(sourceMember);
-                var targetMemberType = GetPropertyOrFieldType(targetMember);
+                var sourceMemberType = GetPropertyOrFieldType(sourceMember.Value);
+                var targetMemberType = GetPropertyOrFieldType(targetMember.Value);
                 if (sourceMemberType != targetMemberType)
                     continue;
 
-                var sourceGetter = Getter.BuildFor(sourceType, sourceMember.Name);
-                var targetSetter = Setter.BuildFor(targetType, sourceMember.Name);
+                var sourceGetter = Getter.BuildFor(sourceType, sourceMember.Value.Name);
+                var targetSetter = Setter.BuildFor(targetType, sourceMember.Value.Name);
 
-                memberMappings.Add(new MemberMapping(sourceGetter, targetSetter));
+                memberMappings.Add(new MemberMapping(sourceGetter.Value, targetSetter.Value));
             }
 
             return new Mapping(sourceType, targetType, memberMappings);
