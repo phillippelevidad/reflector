@@ -47,11 +47,11 @@ namespace tests
     public class TargetWithBackingFields
     {
         private Guid id;
-        private string name;
-        private DateTime createdAt;
+        private string _name;
+        private DateTime m_createdAt;
 
         public Guid Id => id;
-        public string Name => name;
-        public DateTime CreatedAt => createdAt;
+        public string Name => _name;
+        public DateTime CreatedAt => m_createdAt;
     }
 }
