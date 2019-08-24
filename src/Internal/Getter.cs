@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Internal
 {
@@ -23,10 +24,13 @@ namespace Internal
                 return Result.Fail<Getter>(memberResult.Error);
 
             var member = memberResult.Value;
-            var fromSource = Expression.Parameter(type, "source");
-            var accessMember = Expression.PropertyOrField(fromSource, member.Name);
+            var fromSource = Expression.Parameter(typeof(object), "source");
+            var accessMember = member.MemberType == MemberTypes.Property
+                ? Expression.Property(Expression.Convert(fromSource, type), member.Name)
+                : Expression.Field(Expression.Convert(fromSource, type), member.Name);
+            var returnValue = Expression.Convert(accessMember, typeof(object));
 
-            var getter = Expression.Lambda<Func<object, object>>(accessMember, fromSource).Compile();
+            var getter = Expression.Lambda<Func<object, object>>(returnValue, fromSource).Compile();
             var key = $"Get_{type.AssemblyQualifiedName}_{member.Name}";
 
             return new Getter(key, getter);

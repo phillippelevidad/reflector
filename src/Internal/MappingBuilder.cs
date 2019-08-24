@@ -46,7 +46,7 @@ namespace Internal
                     continue;
 
                 var sourceGetter = Getter.BuildFor(sourceType, sourceMember.Value.Name);
-                var targetSetter = Setter.BuildFor(targetType, sourceMember.Value.Name);
+                var targetSetter = Setter.BuildFor(targetType, targetMember.Value.Name);
 
                 memberMappings.Add(new MemberMapping(sourceGetter.Value, targetSetter.Value));
             }

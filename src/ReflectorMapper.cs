@@ -11,6 +11,13 @@ namespace System.Reflection
             return target as TTarget;
         }
 
+        public static object Map(object source, Type targetType)
+        {
+            var target = Reflector.Create(targetType).GetInstance();
+            Map(source, target);
+            return target;
+        }
+
         public static void Map(object source, object target)
         {
             if (source == null)

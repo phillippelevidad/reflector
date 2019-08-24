@@ -39,7 +39,9 @@ namespace Internal
             var target = Expression.Parameter(typeof(object), "target");
             var withValue = Expression.Parameter(typeof(object), "value");
 
-            var accessMember = Expression.PropertyOrField(Expression.Convert(target, type), member.Name);
+            var accessMember = member.MemberType == MemberTypes.Property
+                ? Expression.Property(Expression.Convert(target, type), member.Name)
+                : Expression.Field(Expression.Convert(target, type), member.Name);
             var assign = Expression.Assign(accessMember, Expression.Convert(withValue, memberType));
 
             return Expression.Lambda<Action<object, object>>(assign, target, withValue).Compile();

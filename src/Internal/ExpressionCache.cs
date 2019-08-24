@@ -77,7 +77,7 @@ namespace Internal
         }
 
         private static string GetKey(Type type) => type.AssemblyQualifiedName;
-        private static string GetKey(Type type, string memberName) => $"{type.AssemblyQualifiedName}_{memberName}";
-        private static string GetKey(Type source, Type target) => $"{source.AssemblyQualifiedName}|{target.AssemblyQualifiedName}";
+        private static string GetKey(Type type, string memberName) => type.AssemblyQualifiedName + memberName;
+        private static string GetKey(Type source, Type target) => source.AssemblyQualifiedName + target.AssemblyQualifiedName;
     }
 }
