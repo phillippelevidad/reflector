@@ -32,11 +32,11 @@ namespace Internal
 
             foreach (var sourceProperty in sourceType.GetProperties())
             {
-                var sourceMember = MemberAccessor.GetMemberForReadingOrNull(sourceType, sourceProperty.Name);
+                var sourceMember = MemberAccessor.GetMemberForReading(sourceType, sourceProperty.Name);
                 if (sourceMember.IsFailure)
                     continue;
 
-                var targetMember = MemberAccessor.GetMemberForWritingOrNull(targetType, sourceProperty.Name);
+                var targetMember = MemberAccessor.GetMemberForWriting(targetType, sourceProperty.Name);
                 if (targetMember.IsFailure)
                     continue;
 

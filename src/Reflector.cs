@@ -4,13 +4,13 @@ namespace System.Reflection
 {
     public class Reflector
     {
-        private readonly Type type;
         private readonly object instance;
+        private readonly TypeConstructorAndSetters constructorAndSetters;
 
-        private Reflector(Type type, object instance)
+        private Reflector(object instance, TypeConstructorAndSetters constructorAndSetters)
         {
-            this.type = type;
             this.instance = instance;
+            this.constructorAndSetters = constructorAndSetters;
         }
 
         public static Reflector Create(Type type)
@@ -18,8 +18,13 @@ namespace System.Reflection
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 
-            var instance = ExpressionCache.GetConstructor(type).Construct();
-            return new Reflector(type, instance);
+            var constructorAndSetters = TypeConstructorAndSettersCache.GetTypeConstructorAndSetters(type);
+
+            if (constructorAndSetters.ConstructorOrNull == null)
+                throw new InvalidOperationException($"Did not found a default constructor for type {type.AssemblyQualifiedName}.");
+
+            var instance = constructorAndSetters.ConstructorOrNull.Construct();
+            return new Reflector(instance, constructorAndSetters);
         }
 
         public static Reflector<T> Create<T>() where T : class
@@ -34,7 +39,8 @@ namespace System.Reflection
                 throw new ArgumentNullException(nameof(instance));
 
             var type = instance.GetType();
-            return new Reflector(type, instance);
+            var constructorAndSetters = TypeConstructorAndSettersCache.GetTypeConstructorAndSetters(type);
+            return new Reflector(instance, constructorAndSetters);
         }
 
         public static Reflector<T> Using<T>(T instance) where T : class
@@ -50,7 +56,12 @@ namespace System.Reflection
 
         public Reflector Set(string memberName, object value)
         {
-            ExpressionCache.GetSetter(type, memberName).Set(instance, value);
+            var setterOrNull = constructorAndSetters.GetSetterOrNull(memberName);
+
+            if (setterOrNull == null)
+                throw new InvalidOperationException($"Could not set property of field '{memberName}'.");
+
+            setterOrNull.Set(instance, value);
             return this;
         }
     }

@@ -19,7 +19,7 @@ namespace Internal
 
         internal static Result<Setter> BuildFor(Type type, string memberName)
         {
-            var memberResult = MemberAccessor.GetMemberForWritingOrNull(type, memberName);
+            var memberResult = MemberAccessor.GetMemberForWriting(type, memberName);
             if (memberResult.IsFailure)
                 return Result.Fail<Setter>(memberResult.Error);
 

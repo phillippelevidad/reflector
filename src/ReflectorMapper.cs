@@ -26,7 +26,7 @@ namespace System.Reflection
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            var mapping = ExpressionCache.GetMapping(source.GetType(), target.GetType());
+            var mapping = MappingCache.GetMapping(source.GetType(), target.GetType());
             mapping.Map(source, target);
         }
     }
