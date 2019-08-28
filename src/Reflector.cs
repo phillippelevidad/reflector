@@ -18,7 +18,7 @@ namespace System.Reflection
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 
-            var constructorAndSetters = TypeConstructorAndSettersCache.GetTypeConstructorAndSetters(type);
+            var constructorAndSetters = Cache.GetTypeConstructorAndSetters(type);
 
             if (constructorAndSetters.ConstructorOrNull == null)
                 throw new InvalidOperationException($"Did not found a default constructor for type {type.AssemblyQualifiedName}.");
@@ -39,7 +39,7 @@ namespace System.Reflection
                 throw new ArgumentNullException(nameof(instance));
 
             var type = instance.GetType();
-            var constructorAndSetters = TypeConstructorAndSettersCache.GetTypeConstructorAndSetters(type);
+            var constructorAndSetters = Cache.GetTypeConstructorAndSetters(type);
             return new Reflector(instance, constructorAndSetters);
         }
 
